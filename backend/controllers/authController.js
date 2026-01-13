@@ -34,13 +34,13 @@ exports.login = async (req, res) => {
         if (!user)
             return res.status(400).json({ msg: 'Nieprawidłowe imię użytkownika' });
 
-        const isMatch = bcrypt.compare(password, user.password);
+        const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) 
             return res.status(400).json({ msg: 'Nieprawidłowe hasło' });
 
         const token = jwt.sign(
             { id: user._id, role: user.role },
-            proccess.env.JWT_SECRET,
+            process.env.JWT_SECRET,
             { expiresIn: '1d' }
         );
 
