@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const authRoutes = require('./routes/authRoutes');
 
 // 1. Ładowanie zmiennych z pliku .env
 dotenv.config();
@@ -9,6 +10,7 @@ const app = express();
 
 // 2. Middleware do obsługi danych JSON (potrzebne do API)
 app.use(express.json());
+app.use('/api/auth', authRoutes);
 
 // 3. Połączenie z MongoDB Atlas
 mongoose.connect(process.env.MONGO_URI)
