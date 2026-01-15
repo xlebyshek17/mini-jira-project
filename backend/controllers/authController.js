@@ -4,19 +4,21 @@ const jwt = require('jsonwebtoken');
 
 exports.register = async (req, res) => {
     try {
-        const { username, password, role } = req.body;
+        const { email, password, firstName, lastName } = req.body;
 
-        let user = await User.findOne({ username });
+        let user = await User.findOne({ email });
         if (user)
             return res.status(400).json({ msg: 'Użytkownik już istnije'});
 
+        // haszowanie hasłą
         const salt = await bcrypt.genSalt(12);
         const hashedPassword = await bcrypt.hash(password, salt);
 
         user = new User({
-            username,
+            email,
             password: hashedPassword,
-            role: role || 'user'
+            firstName,
+            lastName
         });
 
         await user.save();
@@ -28,9 +30,9 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { email, password } = req.body;
 
-        const user = await User.findOne({ username });
+        const user = await User.findOne({ email });
         if (!user)
             return res.status(400).json({ msg: 'Nieprawidłowe imię użytkownika' });
 
@@ -39,14 +41,20 @@ exports.login = async (req, res) => {
             return res.status(400).json({ msg: 'Nieprawidłowe hasło' });
 
         const token = jwt.sign(
-            { id: user._id, role: user.role },
+            { id: user._id },
             process.env.JWT_SECRET,
             { expiresIn: '1d' }
         );
 
         res.json({
             token,
-            user: { id: user._id, username: user.username, role: user.role }
+            user: { 
+                id: user._id, 
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                avatarUrl: user.avatarUrl
+            }
         });
     } catch (err) {
         res.status(500).send('Błąd serwera przy logowaniu');

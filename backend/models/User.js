@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema({
     email: {
         type: String,
-        required: [true, 'Email is required'],
+        required: true,
         unique: true,
         trim: true,       //usuwa zbędne spacje
         lowercase: true,
@@ -15,12 +15,12 @@ const UserSchema = new mongoose.Schema({
     },
     firstName: {
         type: String,
-        required: [true, 'First Name is required'],
+        required: true,
         trim: true
     },
     lastName: {
         type: String,
-        required: [true, 'Last Name is required'],
+        required: true,
         trim: true
     },
     avatarUrl: {
