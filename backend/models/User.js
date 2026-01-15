@@ -1,20 +1,31 @@
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
-    username: {
+    email: {
         type: String,
-        required: true,
+        required: [true, 'Email is required'],
         unique: true,
-        trim: true    //usuwa zbędne spacje
+        trim: true,       //usuwa zbędne spacje
+        lowercase: true,
+        match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
     },
     password: {
         type: String,
         required: true
     },
-    role: {
+    firstName: {
         type: String,
-        enum: ['user', 'admin'],
-        default: 'user'
+        required: [true, 'First Name is required'],
+        trim: true
+    },
+    lastName: {
+        type: String,
+        required: [true, 'Last Name is required'],
+        trim: true
+    },
+    avatarUrl: {
+        type: String,
+        default: null
     }
 }, { timestamps: true }); // automatycznie doda pola createdAt i updatedAt
 

@@ -1,18 +1,44 @@
 const mongoose = require('mongoose');
 
+const CommentSchema = new mongoose.Schema({
+    text: { 
+        type: String, 
+        required: true
+    },
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+}, { _id: true });
+
 const TaskSchema = new mongoose.Schema({
+    project: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Project',
+        required: true,
+        index: true
+    },
+    type: {
+        type: String, 
+        enum: ['Task', 'Bug', 'Feature'],
+        default: 'Task'
+    },
     title: {
         type: String,
         required: true,
         trim: true
     },
     description: {
-        type: String,
-        required: true
+        type: String
     },
     status: {
         type: String,
-        enum: ['To Do', 'In progress', 'Done'],
+        enum: ['To Do', 'In progress', 'In Review', 'Done'],
         default: 'To Do'
     },
     priority: {
@@ -20,11 +46,24 @@ const TaskSchema = new mongoose.Schema({
         enum: ['Low', 'Medium', 'High'],
         default: 'Medium'
     },
+    dueDate: {
+        type: Date
+    },
     assignedTo: {
         type: mongoose.Schema.Types.ObjectId, //przechowuję unikalny numer ID
         ref: 'User', // ten ID odnosi się do dokumentu z modelu User
         required: true
-    }
+    },
+    reporter: { 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    order: { // Поле для сохранения порядка сортировки в колонке (Drag-and-Drop)
+        type: Number, 
+        default: 0 
+    },
+    comments: [CommentSchema]
 }, { timestamps: true });
 
 module.exports = mongoose.model('Task', TaskSchema);
