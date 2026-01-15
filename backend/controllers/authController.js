@@ -24,7 +24,7 @@ exports.register = async (req, res) => {
         await user.save();
         res.status(200).json({ msg: 'Użytkownik zerejestrowany pomyślnie' });
     } catch (err) {
-        res.status(500).send('Błąd serwera przy rejestracji');
+        res.status(500).json({ msg: 'Błąd serwera przy rejestracji' });
     }
 };
 
@@ -57,7 +57,7 @@ exports.login = async (req, res) => {
             }
         });
     } catch (err) {
-        res.status(500).send('Błąd serwera przy logowaniu');
+        res.status(500).json({ msg: 'Błąd serwera przy logowaniu' });
     }
 };
 

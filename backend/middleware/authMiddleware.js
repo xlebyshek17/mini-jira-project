@@ -16,15 +16,15 @@ const protect = async (req, res, next) => {
             //dodajemy dane użytkownika do req
             req.user = req.user = await User.findById(decoded.id).select('-password');
 
-            next(); // jak wszystko ok, idzemy do kolejnej funckcji
+            return next(); // jak wszystko ok, idzemy do kolejnej funckcji
         } catch(err) {
-            res.status(401).json({ msg: 'Brak autoryzacji, błędny token' });
+            return res.status(401).json({ msg: 'Brak autoryzacji, błędny token' });
         }
+    }
 
-        if (!token) {
-            res.status(401).json({ msg: 'Brak autoryzacji, brak tokena' });
-        }
+    if (!token) {
+        return res.status(401).json({ msg: 'Brak autoryzacji, brak tokena' });
     }
 }
 
-module.exports = { protect };
+module.exports = protect;
