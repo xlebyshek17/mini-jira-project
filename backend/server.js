@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/authRoutes');
 const projectRoutes = require('./routes/projectRoutes');
+const taskRoutes = require('./routes/taskRoutes');
 
 // 1. Ładowanie zmiennych z pliku .env
 dotenv.config();
@@ -13,6 +14,7 @@ const app = express();
 app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
+app.use('api/tasks/', taskRoutes);
 
 // 3. Połączenie z MongoDB Atlas
 mongoose.connect(process.env.MONGO_URI)
