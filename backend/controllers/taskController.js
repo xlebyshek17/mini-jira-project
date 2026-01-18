@@ -95,7 +95,7 @@ exports.addTaskComment = async (req, res) => {
 
         const task = await Task.findById(taskId);
         if (!task) {
-            return res.json(404).json({ msg: 'Zadanie nie istnieje' });
+            return res.status(404).json({ msg: 'Zadanie nie istnieje' });
         }
 
         task.comments.push({
@@ -142,7 +142,7 @@ exports.assignTask = async (req, res) => {
 //  UPDATE TASK
 exports.updateTask = async (req, res) => {
     try {
-        const { title, descriptione, priority, dueDate } = req.body;
+        const { title, description, priority, dueDate } = req.body;
         const taskId = req.params.taskId;
         const userRole = req.projectRole;
 
@@ -165,6 +165,9 @@ exports.updateTask = async (req, res) => {
         if (!task) {
             return res.status(404).json({ msg: 'Zadanie nie istnieje' });
         }
+
+        return res.json(task);
+
     } catch (err) {
         return res.status(500).json({ msg: 'Błąd podczas edycji zadania' });
     }
