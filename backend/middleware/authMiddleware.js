@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken');
-const User = required('../models/User');
+const User = require('../models/User');
 
 // sprawdzamy, czy użytkownik jest zalogowany (ma ważny token)
 const protect = async (req, res, next) => {
     let token;
 
-    if (req.headers.authorization && req.headers.authorization.startWith('Bearer')) {
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         try {
             // pobieramy token (ucinamy słowo 'Bearer ')
             token = req.headers.authorization.split(' ')[1];

@@ -10,7 +10,7 @@ const {
     changeProjectStatus
 } = require('../controllers/projectController');
 
-const protect = reqiure('../middleware/authMiddleware');
+const protect = require('../middleware/authMiddleware');
 const checkProjectRole = require('../middleware/checkProjectRole');
 
 router.post('/', protect, createProject);

@@ -13,17 +13,17 @@ const checkProjectRole = (requiredRole) => {
                 
             const member = project.members.find(m => m.user.toString() === userId);
             if (!member) {
-                return req.status(403).json({ msg: 'Odmowa dostępu: Nie jesteś członkiem tego projektu!' });
+                return res.status(403).json({ msg: 'Odmowa dostępu: Nie jesteś członkiem tego projektu!' });
             }
 
             if (requiredRole === 'admin' && member.role !== 'admin') {
                 return res.status(403).json({ msg: 'Wymagane uprawnienia administratora projektu'})
             }
 
-            req.projectRole = member.role;
+            return req.projectRole = member.role;
             next();
         } catch (err) {
-            res.status(500).json({ msg: 'Server Error' });
+            return res.status(500).json({ msg: 'Server Error' });
         }
     };
 };
