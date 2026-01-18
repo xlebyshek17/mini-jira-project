@@ -13,7 +13,10 @@ exports.getProjectTasks = async (req, res) => {
         return res.json(tasks);
 
     } catch (err) {
-        res.status(500).json({ msg: 'Błąd podczas pobieraniu zadań'} );
+        res.status(500).json({ 
+            msg: 'Błąd podczas pobieraniu zadań',
+            error: err.message
+        });
     }
 };
 
@@ -39,7 +42,10 @@ exports.createTask = async (req, res) => {
         return res.status(201).json(task);
 
     } catch (err) {
-        res.status(500).json({ msg: 'Błąd podczas tworzenia zadania' });
+        res.status(500).json({ 
+            msg: 'Błąd podczas tworzenia zadania',
+            error: err.message
+        });
     }
 };
 
@@ -84,7 +90,10 @@ exports.updateTaskStatus = async (req, res) => {
         return res.json(task);
 
     } catch (err) {
-        res.status(500).json({ msg: 'Błąd podczas zmiany statusu' });
+        res.status(500).json({ 
+            msg: 'Błąd podczas zmiany statusu',
+            error: err.message
+        });
     }
 };
 
@@ -108,7 +117,10 @@ exports.addTaskComment = async (req, res) => {
         return res.status(201).json(task.comments);
 
     } catch (err) {
-        return res.status(500).json({ msg: 'Błąd podczas dodawania komentarza' });
+        return res.status(500).json({ 
+            msg: 'Błąd podczas dodawania komentarza',
+            error: err.message
+        });
     }
 };
 
@@ -135,7 +147,10 @@ exports.assignTask = async (req, res) => {
 
         return res.json(task);
     } catch (err) {
-        return res.status(500).json({ msg: 'Błąd podczas przypisywania wykonawcy' });
+        return res.status(500).json({ 
+            msg: 'Błąd podczas przypisywania wykonawcy',
+            error: err.message
+        });
     }
 };
 
@@ -169,7 +184,10 @@ exports.updateTask = async (req, res) => {
         return res.json(task);
 
     } catch (err) {
-        return res.status(500).json({ msg: 'Błąd podczas edycji zadania' });
+        return res.status(500).json({ 
+            msg: 'Błąd podczas edycji zadania',
+            error: err.message
+        });
     }
 };
 

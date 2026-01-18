@@ -19,7 +19,10 @@ exports.createProject = async (req, res) => {
         const project = await newProject.save();
         return res.status(201).json(project);
     } catch (err) {
-        return res.status(500).json({ msg: 'Bład podczas tworzenia projektu' });
+        return res.status(500).json({ 
+            msg: 'Bład podczas tworzenia projektu',
+            error: err.message
+         });
     }
 };
 
@@ -45,7 +48,10 @@ exports.joinProject = async (req, res) => {
             msg: 'Dołączono do projektu!', 
             project} );
     } catch (err) {
-        return res.status(500).json({ msg: 'Błąd podczas dołączenia' });
+        return res.status(500).json({ 
+            msg: 'Błąd podczas dołączenia',
+            error: err.message
+        });
     }
 };
 
@@ -55,7 +61,10 @@ exports.getMyProjects = async (req, res) => {
         const projects = await Project.find({ "members.user": req.user.id });
         return res.json(projects);
     } catch (err) {
-        return res.status(500).json({ msg: 'Błąd serwera' });
+        return res.status(500).json({ 
+            msg: 'Błąd serwera',
+            error: err.message
+        });
     }
 };
 
@@ -73,7 +82,10 @@ exports.getProjectDetails = async (req, res) => {
 
         return res.json(project);
     } catch (err) {
-        return res.status(500).json({ msg: 'Błąd podczas pobierania danych projektu' });
+        return res.status(500).json({ 
+            msg: 'Błąd podczas pobierania danych projektu',
+            error: err.message
+        });
     }
 };
 
@@ -100,7 +112,10 @@ exports.changeUserRole = async (req, res) => {
             msg: `Rola zmieniona na ${newRole}`, 
             project });
     } catch (err) {
-        return res.status(500).json({ msg: 'Błąd podczas zmieny roli' });
+        return res.status(500).json({ 
+            msg: 'Błąd podczas zmieny roli',
+            error: err.message
+        });
     }
 };
 
@@ -131,9 +146,9 @@ exports.changeProjectStatus = async (req, res) => {
             msg: `Status zmieniony na ${newStatus}`, 
             project} );
     } catch (err) {
-        return res.status(500).json({ msg: 'Błąd podczas zmieny statusa projektu' });
+        return res.status(500).json({ 
+            msg: 'Błąd podczas zmieny statusa projektu',
+            error: err.message
+        });
     }
 };
-
-
-
