@@ -67,3 +67,37 @@ exports.login = async (req, res) => {
     }
 };
 
+exports.updateProfile = async (req, res) => {
+    try {
+        const { firstName, lastName, email, password } = req.body;
+        const userId = req.user._id;
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ msg: 'Użytkownik nie istnieje' });
+        }
+
+        user.firstName = firstName || user.firsName;
+        user.lastName = lastName || user.lastName;
+        user.email = email || user.email;
+        user.password = password || user.password;
+
+        const updatedUser = await user.save();
+
+        res.json({
+                user: {
+                    id: updatedUser._id,
+                    firstName: updatedUser.firstName,
+                    lastName: updatedUser.lastName,
+                    email: updatedUser.email
+                }
+            });
+    } catch (err) {
+        res.status(500).json({ 
+            msg: 'Błąd serwera',
+            error: err.message
+        });
+    }
+};
+
