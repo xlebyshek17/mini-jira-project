@@ -21,13 +21,13 @@ const projectService = {
         return response.data;
     },
 
-    changeUserRole: async (projectId, userId, newRole) => {
-        const response = await api.put(`/projects/${projectId}/role`, { userId, newRole });
+    updateMemberRole: async (projectId, userId, newRole) => {
+        const response = await api.patch(`/projects/${projectId}/role`, { userId, newRole });
         return response.data;
     },
 
     changeProjectStatus: async (projectId, newStatus) => {
-        const response = await api.put(`/projects/${projectId}/status`, { newStatus });
+        const response = await api.patch(`/projects/${projectId}/status`, { newStatus });
         return response.data;
     },
 

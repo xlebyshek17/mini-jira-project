@@ -6,6 +6,7 @@ import TaskList from '../pages/TaskList';
 import TaskEditModal from '../components/TaskEditModal';
 import TaskBoard from '../pages/TaskBoard';
 import TaskViewModal from '../components/TaskViewModal';
+import ProjectMembers from '../pages/ProjectMembers';
 
 const ProjectDetails = () => {
     const { projectId } = useParams();
@@ -45,18 +46,31 @@ const ProjectDetails = () => {
         if (projectId) fetchTasks();
     }, [projectId]);
 
+    const loadDetails = async () => {
+        try {
+            const data = await projectService.getProjectDetails(projectId);
+            setProject(data);
+        } catch (err) {
+            console.error("Szczegóły błędu ładowania projektu:", err);
+        }
+    };
+
     useEffect(() => {
-        const loadDetails = async () => {
-            try {
-                const data = await projectService.getProjectDetails(projectId);
-                setProject(data);
-                
-            } catch (err) {
-                console.error("Szczegóły błędu:", err);
-            }
-        };
-        loadDetails();
+        if (projectId) loadDetails();
     }, [projectId]);
+
+    // useEffect(() => {
+    //     const loadDetails = async () => {
+    //         try {
+    //             const data = await projectService.getProjectDetails(projectId);
+    //             setProject(data);
+                
+    //         } catch (err) {
+    //             console.error("Szczegóły błędu:", err);
+    //         }
+    //     };
+    //     loadDetails();
+    // }, [projectId]);
 
     const handleTaskClick = (task) => {
         setSelectedTask(task);
@@ -111,11 +125,16 @@ const ProjectDetails = () => {
                                             onTaskClick={handleTaskViewClick} 
                                         />}
                 {activeTab === 'members' && (
-                    <div>
-                        <h5>Zarządzanie użytkownikami</h5>
-                        <p className="text-muted small">Kod zaproszenia: <strong className="text-success">{project.inviteCode}</strong></p>
-                        
-                    </div>
+                   <ProjectMembers 
+                        members={project.members} 
+                        projectId={projectId}
+                        inviteCode={project.inviteCode}
+                        ownerId={project.owner._id}
+                        isAdmin={isAdmin} 
+                        onMemberUpdated={() => {
+                            loadDetails(); 
+                        }}
+                    />
                 )}
                 {activeTab === 'settings' && <div>Ustawienia projektu i archiwizacja</div>}
             </div>
