@@ -1,5 +1,6 @@
 const Project = require('../models/Project');
 const crypto = require('crypto');
+const Task = require('../models/Task');
 
 // CREATE PROJECT
 exports.createProject = async (req, res) => {
@@ -150,5 +151,31 @@ exports.changeProjectStatus = async (req, res) => {
             msg: 'Błąd podczas zmieny statusa projektu',
             error: err.message
         });
+    }
+};
+
+exports.removeMember = async (req, res) => {
+    try {
+        const { projectId, userId } = req.params;
+
+        const project = await Project.findByIdAndUpdate(
+            projectId,
+            { $pull: { members: { user: userId } } },
+            { new: true }
+        );
+
+        if (!project) {
+            return res.status(404).json({ msg: 'Projekt nie instenieje' });
+        }
+
+        await Task.updateMany(
+            { project: projectId, assignedTo: userId },
+            { $set: { assignedTo: null } }
+        );
+
+        return res.json({ msg: 'Użytkownik usunięty, a zadania zostały odpięte'})
+
+    } catch (err) {
+
     }
 };

@@ -29,6 +29,11 @@ const projectService = {
     changeProjectStatus: async (projectId, newStatus) => {
         const response = await api.put(`/projects/${projectId}/status`, { newStatus });
         return response.data;
+    },
+
+    removeMember: async (projectId, userId) => {
+        const response = await api.delete(`/projects/${projectId}/${userId}`);
+        return response.data;
     }
 };
 

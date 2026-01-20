@@ -7,7 +7,8 @@ const {
     getMyProjects,
     getProjectDetails,
     changeUserRole,
-    changeProjectStatus
+    changeProjectStatus,
+    removeMember
 } = require('../controllers/projectController');
 
 const protect = require('../middleware/authMiddleware');
@@ -19,5 +20,6 @@ router.get('/', protect, getMyProjects);
 router.get('/:projectId', protect, checkProjectRole('user'), getProjectDetails);
 router.patch('/:projectId/role', protect, checkProjectRole('admin'), changeUserRole);
 router.patch('/:projectId/status', protect, checkProjectRole('admin'), changeProjectStatus);
+router.delete('/:projectId/:userId', protect, checkProjectRole('admin'), removeMember);
 
 module.exports = router;
