@@ -7,6 +7,7 @@ const TaskEditModal = ({ task, isOpen, onClose, onTaskUpdated, members }) => {
         description: '',
         priority: 'Medium',
         type: 'Task',
+        link: '',
         dueDate: '',
         assignedTo: ''
     });
@@ -19,6 +20,7 @@ const TaskEditModal = ({ task, isOpen, onClose, onTaskUpdated, members }) => {
                 description: task.description || '',
                 priority: task.priority || 'Medium',
                 type: task.type || 'Task',
+                link: task.link || '',
                 dueDate: task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '',
                 assignedTo: task.assignedTo?._id || ''
             });
@@ -103,7 +105,7 @@ const TaskEditModal = ({ task, isOpen, onClose, onTaskUpdated, members }) => {
                                 </div>
                             </div>
                             <div className="row">
-                                <div className="col-md-12 mb-3">
+                                <div className="col-md-6 mb-3">
                                     <label className="form-label fw-bold text-secondary small">WYKONAWCA (ASSIGNEE)</label>
                                     <select 
                                         className="form-select bg-light border-0"
@@ -118,6 +120,19 @@ const TaskEditModal = ({ task, isOpen, onClose, onTaskUpdated, members }) => {
                                         ))}
                                     </select>
                                 </div>
+                                <div className="col-md-6 mb-3">
+                                    <label className="form-label fw-bold text-secondary small text-uppercase">Link do zadania (Review Link)</label>
+                                    <div className="input-group">
+                                        <span className="input-group-text bg-light border-0">🔗</span>
+                                        <input 
+                                            type="url"
+                                            className="form-control bg-light border-0"
+                                            placeholder="https://github.com/twoj-projekt"
+                                            value={formData.link || ''}
+                                            onChange={(e) => setFormData({...formData, link: e.target.value})}
+                                        />
+                                    </div>
+                                </div>      
                             </div>
                         </div>
 

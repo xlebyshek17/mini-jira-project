@@ -12,12 +12,12 @@ const taskService = {
         return response.data;
     },
 
-    updateStatus: async (taskId, newStatus, commentText = '') => {
+    updateTaskStatus: async (taskId, newStatus, commentText = '') => {
         const response = await api.put(`/tasks/${taskId}/status`, { newStatus, commentText });
         return response.data;
     },
 
-    addComment: async (taskId, text) => {
+    addTaskComment: async (taskId, text) => {
         const response = await api.post(`/tasks/${taskId}/comments`, { text });
         return response.data;
     },
@@ -29,6 +29,11 @@ const taskService = {
 
     updateTask: async (taskId, updatedTask) => {
         const response = await api.put(`/tasks/${taskId}`, updatedTask);
+        return response.data;
+    },
+
+    updateLink: async (taskId, link) => {
+        const response = await api.patch(`/tasks/${taskId}/link`, { link } );
         return response.data;
     }
 };

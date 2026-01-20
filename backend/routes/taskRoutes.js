@@ -6,7 +6,8 @@ const { getProjectTasks,
         updateTaskStatus, 
         addTaskComment, 
         assignTask, 
-        updateTask } = require('../controllers/taskController');
+        updateTask,
+        updateLink } = require('../controllers/taskController');
 
 const protect = require('../middleware/authMiddleware');
 const checkProjectRole = require('../middleware/checkProjectRole');
@@ -20,5 +21,6 @@ router.put('/:taskId/status', protect, checkProjectRole('user'), updateTaskStatu
 router.put('/:taskId/assign', protect, checkProjectRole('admin'), assignTask);
 router.post('/:taskId/comments', protect, checkProjectRole('user'), addTaskComment);
 router.put('/:taskId', protect, checkProjectRole('admin'), updateTask);
+router.patch('/:taskId/link', protect, checkProjectRole('user'), updateLink);
 
 module.exports = router;

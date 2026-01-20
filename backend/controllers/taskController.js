@@ -8,6 +8,7 @@ exports.getProjectTasks = async (req, res) => {
         const tasks = await Task.find({ project: projectId })
             .populate('assignedTo', 'firstName lastName avatarUrl')
             .populate('reporter', 'firstName lastName')
+            .populate('comments.author', 'firstName lastName avatarUrl')
             .sort({ order: 1 });
 
         return res.json(tasks);
@@ -30,6 +31,7 @@ exports.createTask = async (req, res) => {
             type,
             title,
             description: description || '',
+            link: '',
             status: 'To Do',
             priority: priority || 'Medium',
             ...(assignedTo && { assignedTo }), 
@@ -52,7 +54,7 @@ exports.createTask = async (req, res) => {
 // UPDATE STATUS 
 exports.updateTaskStatus = async (req, res) => {
     try {
-        const { newStatus, commentText } = req.body;
+        const { newStatus } = req.body;
         const taskId = req.params.taskId;
 
         const task = await Task.findById(taskId);
@@ -61,7 +63,7 @@ exports.updateTaskStatus = async (req, res) => {
         }
 
         const userRole = req.projectRole; // rola z middleware
-        const isAssigned = task.assignedTo.toString() === req.user.id;
+        const isAssigned = task.assignedTo?.toString() === req.user.id;
 
         if (userRole === 'user') {
             if (!isAssigned) {
@@ -71,17 +73,6 @@ exports.updateTaskStatus = async (req, res) => {
             if (newStatus === 'Done') {
                 return res.status(403).json({ msg: 'Nie masz uprawień do tego ruchu' });
             }
-        }
-
-        if (userRole === 'admin' && task.status === 'In Review' && newStatus === 'To Do') {
-            if (!commentText) {
-                return res.status(400).json({ msg: 'Wymagany komentarz przy odrzuceniu zadania' });
-            }
-
-            task.comments.push({
-                text: commentText,
-                author: req.user.id
-            });
         }
 
         task.status = newStatus;
@@ -154,10 +145,39 @@ exports.assignTask = async (req, res) => {
     }
 };
 
+exports.updateLink = async (req, res) => {
+    try {
+        const { link } = req.body;
+        const taskId = req.params.taskId;
+        const isAdmin = req.projectRole === 'admin';
+
+        const task = await Task.findById(taskId);
+        if (!task) {
+            return res.status(404).json({ msg: 'Zadanie nie istnieje' });
+        }
+
+        const isAssigned = task.assignedTo?.toString() === req.user.id;
+
+        if (!isAssigned && !isAdmin) {
+            return res.status(403).json({ msg: 'Możesz zmieniać link tylko swoich zadań '});
+        }
+
+        task.link = link;
+        const newTask = await task.save();
+
+        return res.json(newTask);
+    } catch (err) {
+        return res.status(500).json({ 
+            msg: 'Błąd podczas zmiany linka',
+            error: err.message
+        })
+    }
+};
+
 //  UPDATE TASK
 exports.updateTask = async (req, res) => {
     try {
-        const { title, description, priority, type, dueDate, assignedTo } = req.body;
+        const { title, description, priority, type, link, dueDate, assignedTo } = req.body;
         const taskId = req.params.taskId;
         const userRole = req.projectRole;
 
@@ -172,6 +192,7 @@ exports.updateTask = async (req, res) => {
             description,
             priority,
             type,
+            link: link || '',
             dueDate: dueDate || null,
             assignedTo: assignedToValue
         };
