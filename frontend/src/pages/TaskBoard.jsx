@@ -1,0 +1,103 @@
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import taskService from '../services/taskService';
+
+const TaskBoard = ({ tasks, setTasks, onTaskClick }) => {
+    const columns = ['To Do', 'In Progress', 'In Review', 'Done'];
+
+    const onDragEnd = async (result) => {
+        const { destination, source, draggableId } = result;
+
+        // Jeśli upuszczono poza tablicę lub w to samo miejsce nic nie rób
+        if (!destination || (destination.droppableId === source.droppableId && destination.index === source.index)) {
+            return;
+        }
+
+        const newStatus = destination.droppableId; // droppableId to u nas nazwa statusu
+        const oldTasks = [...tasks];
+
+        const updatedTasks = tasks.map(task => 
+            task._id === draggableId 
+                ? { ...task, status: newStatus } 
+                : task
+        );
+        setTasks(updatedTasks);
+
+        try {
+            await taskService.updateTaskStatus(draggableId, newStatus);
+        } catch (err) {
+            setTasks(oldTasks);
+            alert("Błąd zmiany statusu: " + (err.response?.data?.msg || err.message));
+        }
+    };
+
+    return (
+        <DragDropContext onDragEnd={onDragEnd}>
+            <div className="d-flex gap-3 overflow-auto pb-4" style={{ minHeight: '70vh' }}>
+                {columns.map(status => (
+                    <Droppable droppableId={status} key={status}>
+                        {(provided) => (
+                            <div 
+                                {...provided.droppableProps}
+                                ref={provided.innerRef}
+                                className="bg-light rounded-3 p-3" 
+                                style={{ minWidth: '300px', width: '300px' }}
+                            >
+                                <h6 className="fw-bold text-secondary text-uppercase mb-3">{status}</h6>
+                                
+                                <div className="d-flex flex-column gap-3">
+                                    {tasks.filter(t => t.status === status).map((task, index) => (
+                                        <Draggable key={task._id} draggableId={task._id} index={index}>
+                                            {(provided) => (
+                                                <div
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                    className="card border-0 shadow-sm p-3 bg-white"
+                                                    onClick={() => onTaskClick(task)}
+                                                >
+                                                    <div className="d-flex justify-content-between mb-2">
+                                                        <span className="text-primary x-small fw-bold">KAN-{task._id.slice(-3)}</span>
+                                                        <span>{task.type === 'Bug' ? '🐞' : task.type === 'Feature' ? '🚀' : '✅'}</span>
+                                                    </div>
+                                                    <p className="mb-2 small fw-bold">{task.title}</p>
+                                                    <div className="d-flex justify-content-end">
+                                                        {task.assignedTo ? (
+                                                            <img 
+                                                                src={`http://localhost:5000${task.assignedTo.avatarUrl}`} 
+                                                                className="rounded-circle" 
+                                                                style={{ width: '24px', height: '24px', objectFit: 'cover' }} 
+                                                                alt="Avatar"
+                                                            />
+                                                        ) : (
+                                                            <span className="text-muted small">👤</span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </Draggable>
+                                    ))}
+                                    {provided.placeholder}
+                                </div>
+                            </div>
+                        )}
+                    </Droppable>
+                ))}
+            </div>
+        </DragDropContext>
+    );
+};
+
+// Funkcje pomocnicze dla wyglądu
+const getPriorityColor = (priority) => {
+    if (priority === 'High') return '#dc3545';
+    if (priority === 'Medium') return '#ffc107';
+    return '#198754';
+};
+
+const getTypeIcon = (type) => {
+    if (type === 'Bug') return '🐞';
+    if (type === 'Feature') return '🚀';
+    return '✅';
+};
+
+export default TaskBoard;

@@ -4,16 +4,18 @@ import projectService from '../services/projectService';
 import taskService from '../services/taskService';
 import TaskList from '../pages/TaskList';
 import TaskEditModal from '../components/TaskEditModal';
+import TaskBoard from '../pages/TaskBoard';
+import TaskViewModal from '../components/TaskViewModal';
 
 const ProjectDetails = () => {
     const { projectId } = useParams();
     const [project, setProject] = useState(null);
     const [activeTab, setActiveTab] = useState('board'); 
-    const [taskTitle, setTaskTitle] = useState('');
     const [tasks, setTasks] = useState([]);
     
     const [selectedTask, setSelectedTask] = useState(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
     const currentUserId = JSON.parse(localStorage.getItem('user'))?.id;
 
@@ -28,6 +30,12 @@ const ProjectDetails = () => {
         try {
             const data = await taskService.getProjectTasks(projectId);
             setTasks(data);
+            if (selectedTask) {
+                const updatedSelectedTask = data.find(t => t._id === selectedTask._id);
+                if (updatedSelectedTask) {
+                    setSelectedTask(updatedSelectedTask);
+                }
+            }
         } catch (err) {
             console.error("Błąd pobierania zadań", err);
         }
@@ -54,6 +62,11 @@ const ProjectDetails = () => {
         setSelectedTask(task);
         setIsEditModalOpen(true);
     };
+
+    const handleTaskViewClick = (task) => {
+    setSelectedTask(task);
+    setIsViewModalOpen(true); // Otwieramy nowe okno podglądu
+};
 
     if (!project) return <div>Ładowanie projektu...</div>;
 
@@ -92,7 +105,11 @@ const ProjectDetails = () => {
                         fetchTasks={fetchTasks}
                     />
                 )}
-                {activeTab === 'board' && <div>Tutaj będzie Twój Kanban (widok Board)</div>}
+                {activeTab === 'board' && <TaskBoard 
+                                            tasks={tasks} 
+                                            setTasks={setTasks}
+                                            onTaskClick={handleTaskViewClick} 
+                                        />}
                 {activeTab === 'members' && (
                     <div>
                         <h5>Zarządzanie użytkownikami</h5>
@@ -109,6 +126,13 @@ const ProjectDetails = () => {
                 onClose={() => setIsEditModalOpen(false)}
                 onTaskUpdated={fetchTasks} 
                 members={project?.members || []}
+            />
+
+            <TaskViewModal 
+                task={selectedTask}
+                isOpen={isViewModalOpen}
+                onClose={() => setIsViewModalOpen(false)}
+                onTaskUpdated={fetchTasks}
             />
         </div>
     );
