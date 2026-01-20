@@ -29,11 +29,11 @@ exports.createTask = async (req, res) => {
             project: projectId,
             type,
             title,
-            description,
+            description: description || '',
             status: 'To Do',
-            priority,
-            dueDate,
-            assignedTo,
+            priority: priority || 'Medium',
+            ...(assignedTo && { assignedTo }), 
+            ...(dueDate && { dueDate }),
             reporter: req.user.id,
         });
 
@@ -157,7 +157,7 @@ exports.assignTask = async (req, res) => {
 //  UPDATE TASK
 exports.updateTask = async (req, res) => {
     try {
-        const { title, description, priority, dueDate } = req.body;
+        const { title, description, priority, type, dueDate, assignedTo } = req.body;
         const taskId = req.params.taskId;
         const userRole = req.projectRole;
 
@@ -165,16 +165,21 @@ exports.updateTask = async (req, res) => {
             return res.status(403).json({ msg: 'Tylko administrator może edytować szczegóły zadania' });
         }
 
+        const assignedToValue = (assignedTo === "" || !assignedTo) ? null : assignedTo;
+
+        const updateFields = {
+            title,
+            description,
+            priority,
+            type,
+            dueDate: dueDate || null,
+            assignedTo: assignedToValue
+        };
+
         const task = await Task.findByIdAndUpdate(
             taskId,
-            { 
-                title, 
-                description, 
-                priority, 
-                type, 
-                dueDate 
-            },
-            { new: true, runValidators: true } // runValidators sprawdzi czy dane są zgodne z enumami w Schema
+            updateFields,
+            { new: true, runValidators: true }
         ).populate('assignedTo', 'firstName lastName avatarUrl');
 
         if (!task) {
@@ -186,7 +191,7 @@ exports.updateTask = async (req, res) => {
     } catch (err) {
         return res.status(500).json({ 
             msg: 'Błąd podczas edycji zadania',
-            error: err.message
+            error: err.message 
         });
     }
 };

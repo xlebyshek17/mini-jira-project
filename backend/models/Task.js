@@ -52,14 +52,14 @@ const TaskSchema = new mongoose.Schema({
     assignedTo: {
         type: mongoose.Schema.Types.ObjectId, //przechowuję unikalny numer ID
         ref: 'User', // ten ID odnosi się do dokumentu z modelu User
-        required: true
+        required: false
     },
     reporter: { 
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
-    order: { // Поле для сохранения порядка сортировки в колонке (Drag-and-Drop)
+    order: { 
         type: Number, 
         default: 0 
     },
