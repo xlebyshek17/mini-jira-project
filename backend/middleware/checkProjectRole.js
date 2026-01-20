@@ -1,10 +1,18 @@
 const Project = require('../models/Project');
+const Task = require('../models/Task');
 
 const checkProjectRole = (requiredRole) => {
     return async (req, res, next) => {
         try {
-            const projectId = req.params.projectId || req.body.projectId;
+            let projectId = req.params.projectId || req.body.projectId;
             const userId = req.user.id;
+
+            // Jeśli nie ma projectId w URL, szukamy go przez taskId
+            if (!projectId && req.params.taskId) {
+                const task = await Task.findById(req.params.taskId);
+                if (!task) return res.status(404).json({ msg: 'Zadanie nie istnieje' });
+                projectId = task.project;
+            }
 
             const project = await Project.findById(projectId);
             if (!project) {
@@ -20,10 +28,14 @@ const checkProjectRole = (requiredRole) => {
                 return res.status(403).json({ msg: 'Wymagane uprawnienia administratora projektu'})
             }
 
-            return req.projectRole = member.role;
+            req.projectRole = member.role;
             next();
         } catch (err) {
-            return res.status(500).json({ msg: 'Server Error' });
+            console.log(err);
+            return res.status(500).json({ 
+                msg: 'Server Error',
+                err: err.msg 
+            });
         }
     };
 };

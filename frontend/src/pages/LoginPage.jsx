@@ -13,7 +13,7 @@ const LoginPage = () => {
         e.preventDefault();
         try {
             await authService.login(email, password);
-            navigate('/dashboard');
+            navigate('/profile');
         } catch (err) {
             setError(err.response?.data?.msg || 'Błędny login lub hasło!');
             console.error(err);

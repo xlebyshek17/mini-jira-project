@@ -24,6 +24,31 @@ const authService = {
 
     getCurrentUser: () => {
         return JSON.parse(localStorage.getItem('user'));
+    },
+
+    updateProfile: async (userData) => {
+        const response = await api.put('/auth/profile', userData);
+        if (response.data.user) {
+            localStorage.setItem('user', JSON.stringify(response.data.user));
+        }
+        return response.data;
+    },
+
+    uploadAvatar: async (file) => {
+        const formData = new FormData();
+        formData.append('avatar', file);
+
+        const response = await api.post('/auth/upload-avatar', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data' 
+            }
+        });
+
+        const user = JSON.parse(localStorage.getItem('user'));
+        user.avatarUrl = response.data.avatarUrl;
+        localStorage.setItem('user', JSON.stringify(user));
+
+        return response.data;
     }
 };
 
