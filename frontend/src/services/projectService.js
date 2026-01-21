@@ -34,6 +34,16 @@ const projectService = {
     removeMember: async (projectId, userId) => {
         const response = await api.delete(`/projects/${projectId}/${userId}`);
         return response.data;
+    },
+
+    archiveProject: async (projectId) => {
+        const response = await api.patch(`/projects/${projectId}/archive`);
+        return response.data;
+    },
+
+    updateProject: async (projectId, data) => {
+        const response = await api.put(`/projects/${projectId}`, data);
+        return response.data;
     }
 };
 

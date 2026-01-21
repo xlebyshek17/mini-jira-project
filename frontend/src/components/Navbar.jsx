@@ -9,13 +9,13 @@ const Navbar = () => {
                      TaskFlow
                 </Link>
 
-                <div className="d-none d-md-flex w-25" style={{ marginLeft: '150px' }}>
+                {/* <div className="d-none d-md-flex w-25" style={{ marginLeft: '150px' }}>
                     <input 
                         type="text" 
                         className="form-control form-control-sm bg-light border-0 rounded-pill px-3" 
                         placeholder="Szukaj zadań..." 
                     />
-                </div>
+                </div> */}
 
                 <div className="ms-auto d-flex align-items-center gap-3">
                     

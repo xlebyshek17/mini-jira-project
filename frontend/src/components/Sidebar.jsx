@@ -1,30 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import api from '../api/axiosConfig';
+import  { useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import authService from '../services/authService';
 
-const Sidebar = ({ onOpenCreateModal, onOpenJoinModal }) => {
-    const [projects, setProjects] = useState([]);
+const Sidebar = ({ onOpenCreateModal, onOpenJoinModal, projects }) => {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
     const navigate = useNavigate();
-
-    // Pobieramy projekty, w których użytkownik uczestniczy
-    useEffect(() => {
-        const fetchProjects = async () => {
-            try {
-                const res = await api.get('/projects');
-                setProjects(res.data);
-            } catch (err) {
-                console.error("Nie udało się pobrać projektów", err);
-            }
-        };
-        fetchProjects();
-    }, []);
+    const location = useLocation();
+    // Stan filtra: 'active' lub 'archived'
+    const [filter, setFilter] = useState('active');
 
     const handleLogout = () => {
         authService.logout();
         navigate('/login');
     };
+
+    const filteredProjects = projects.filter(p => p.status === filter);
 
     return (
        <div className="d-flex flex-column flex-shrink-0 p-3 bg-dark text-white border-end border-secondary shadow-sm" 
@@ -66,20 +56,40 @@ const Sidebar = ({ onOpenCreateModal, onOpenJoinModal }) => {
                     </button>
                 </div>
 
-                <ul className="nav nav-pills flex-column mb-auto">
-                    {projects.length > 0 ? (
-                        projects.map((project) => (
-                            <li key={project._id} className="nav-item">
-                                <Link to={`/projects/${project._id}`} className="nav-link text-white hover-dark-success d-flex align-items-center">
-                                    <span className="text-truncate">{project.name}</span>
+                <div className="d-flex gap-2 mb-3 bg-black bg-opacity-25 p-1 rounded-3">
+                    <button 
+                        className={`btn btn-sm flex-grow-1 rounded-2 border-0 ${filter === 'active' ? 'btn-secondary fw-bold' : 'text-secondary'}`}
+                        onClick={() => setFilter('active')}
+                        style={{ fontSize: '0.7rem' }}
+                    >
+                        Aktywne
+                    </button>
+                    <button 
+                        className={`btn btn-sm flex-grow-1 rounded-2 border-0 ${filter === 'archived' ? 'btn-secondary fw-bold' : 'text-secondary'}`}
+                        onClick={() => setFilter('archived')}
+                        style={{ fontSize: '0.7rem' }}
+                    >
+                        Archiwum
+                    </button>
+                </div>
+
+                <ul className="nav flex-column gap-1">
+                    {filteredProjects.length > 0 ? (
+                        filteredProjects.map(project => (
+                            <li className="nav-item" key={project._id}>
+                                <Link 
+                                    to={`/projects/${project._id}`}
+                                    className={`nav-link rounded-3 py-2 px-3 d-flex justify-content-between align-items-center ${location.pathname.includes(project._id) ? 'bg-secondary text-white' : 'text-light'}`}
+                                >
+                                    <span className="text-truncate" style={{ maxWidth: '180px' }}>{project.name}</span>
+                                    {project.status === 'archived' && <span>🔒</span>}
                                 </Link>
                             </li>
                         ))
-                        
                     ) : (
-                        <div className="px-2 mt-3 text-center">
-                            <p className="text-muted small">Brak aktywnych projektów.</p>
-                        </div>
+                        <li className="nav-item ps-3">
+                            <small className="text-secondary italic">Brak projektów</small>
+                        </li>
                     )}
                 </ul>
             </div>

@@ -59,8 +59,11 @@ exports.joinProject = async (req, res) => {
 // GET PROJECTS
 exports.getMyProjects = async (req, res) => {
     try {
-        const projects = await Project.find({ "members.user": req.user.id });
-        return res.json(projects);
+        const userId = req.user.id;
+        const projects = await Project.find({ "members.user": userId })
+        .populate('owner', 'firstName lastName');
+
+        res.json(projects);
     } catch (err) {
         return res.status(500).json({ 
             msg: 'Błąd serwera',
@@ -177,5 +180,41 @@ exports.removeMember = async (req, res) => {
 
     } catch (err) {
 
+    }
+};
+
+exports.archiveProject = async (req, res) => {
+    try {
+
+        const project = await Project.findById(req.params.projectId);
+        if (!project) {
+            return res.status(404).json({ msg: 'Projekt nie instenieje' });
+        }
+
+        const isOwner = project.owner.toString() === req.user.id;
+        if (!isOwner) {
+            return res.status(403).json({ msg: 'Tylko właściciel może zarządzać statusem projektu' });
+        }
+
+        project.status = project.status === 'active' ? 'archived' : 'active';
+        await project.save();
+
+        res.json({ msg: `Projekt został ${project.status === 'archived' ? 'zarchiwizowany' : 'przywrócony'}`, project });
+    } catch (err) {
+        return res.status(500).json({ msg: 'Błąd podczas archivacji projektu' });
+    }
+};
+
+exports.updateProject = async (req, res) => {
+    try {
+        const { name, description } = req.body;
+        const project = await Project.findByIdAndUpdate(
+            req.params.projectId,
+            { name, description },
+            { new: true, runValidators: true }
+        );
+        res.json(project);
+    } catch (err) {
+        res.status(500).json({ msg: 'Błąd podczas aktualizacji projektu' });
     }
 };

@@ -7,8 +7,9 @@ import TaskEditModal from '../components/TaskEditModal';
 import TaskBoard from '../pages/TaskBoard';
 import TaskViewModal from '../components/TaskViewModal';
 import ProjectMembers from '../pages/ProjectMembers';
+import ProjectSettings from './ProjectSetting';
 
-const ProjectDetails = () => {
+const ProjectDetails = ({ refreshProjectList }) => {
     const { projectId } = useParams();
     const [project, setProject] = useState(null);
     const [activeTab, setActiveTab] = useState('board'); 
@@ -50,6 +51,7 @@ const ProjectDetails = () => {
         try {
             const data = await projectService.getProjectDetails(projectId);
             setProject(data);
+            if (refreshProjectList) refreshProjectList();
         } catch (err) {
             console.error("Szczegóły błędu ładowania projektu:", err);
         }
@@ -58,19 +60,6 @@ const ProjectDetails = () => {
     useEffect(() => {
         if (projectId) loadDetails();
     }, [projectId]);
-
-    // useEffect(() => {
-    //     const loadDetails = async () => {
-    //         try {
-    //             const data = await projectService.getProjectDetails(projectId);
-    //             setProject(data);
-                
-    //         } catch (err) {
-    //             console.error("Szczegóły błędu:", err);
-    //         }
-    //     };
-    //     loadDetails();
-    // }, [projectId]);
 
     const handleTaskClick = (task) => {
         setSelectedTask(task);
@@ -91,6 +80,11 @@ const ProjectDetails = () => {
                     <ol className="breadcrumb mb-0">
                         <li className="breadcrumb-item text-secondary">Projekty</li>
                         <li className="breadcrumb-item active fw-bold text-dark">{project.name}</li>
+                        {project.status === 'archived' && (
+                            <span className="badge bg-secondary-subtle text-secondary ms-3 border border-secondary-subtle rounded-pill px-3 py-2 fw-bold" style={{ fontSize: '0.7rem' }}>
+                                <i className="bi bi-archive-fill me-1"></i> ARCHIVED
+                            </span>
+                        )}
                     </ol>
                 </nav>
             </div>
@@ -136,7 +130,14 @@ const ProjectDetails = () => {
                         }}
                     />
                 )}
-                {activeTab === 'settings' && <div>Ustawienia projektu i archiwizacja</div>}
+                {activeTab === 'settings' && 
+                    <ProjectSettings 
+                        project={project}
+                        isAdmin={isAdmin}
+                        isOwner={project.owner._id === currentUserId} 
+                        onProjectUpdated={loadDetails}
+                    />
+                }
             </div>
 
             <TaskEditModal 
