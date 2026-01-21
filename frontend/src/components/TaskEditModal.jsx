@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import taskService from '../services/taskService';
 import { toast } from 'react-toastify';
+import ConfirmModal from './ConfirmModal';
 
-const TaskEditModal = ({ task, isOpen, onClose, onTaskUpdated, members }) => {
+const TaskEditModal = ({ task, isOpen, onClose, onTaskUpdated, members, isAdmin, isArchived }) => {
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -28,6 +30,17 @@ const TaskEditModal = ({ task, isOpen, onClose, onTaskUpdated, members }) => {
         }
     }, [task]);
 
+    const handleDelete = async () => {
+        try {
+            await taskService.deleteTask(task._id);
+            toast.success("Zadanie zostało usunięte");
+            onTaskUpdated(); 
+            onClose(); 
+        } catch (err) {
+            toast.error("Błąd podczas usuwania: " + (err.response?.data?.msg || err.message));
+        }
+    };
+
     if (!isOpen || !task) return null;
 
     const handleSubmit = async (e) => {
@@ -36,6 +49,7 @@ const TaskEditModal = ({ task, isOpen, onClose, onTaskUpdated, members }) => {
             await taskService.updateTask(task._id, formData);
             onTaskUpdated(); // Odświeżamy listę zadań
             onClose();
+            toast.success('Zadanie zaktualizowane pomyślnie');
         } catch (err) {
             toast.error("Błąd podczas aktualizacji: " + err.response?.data?.msg);
         }
@@ -138,12 +152,38 @@ const TaskEditModal = ({ task, isOpen, onClose, onTaskUpdated, members }) => {
                         </div>
 
                         <div className="modal-footer border-0 p-4">
+                            {isAdmin && !isArchived ? (
+                                <button 
+                                    type="button" 
+                                    className="btn btn-outline-danger btn-sm rounded-pill px-3"
+                                    onClick={() => setShowDeleteConfirm(true)}
+                                >
+                                    Usuń zadanie
+                                </button>
+                            ) : (
+                                <div className="text-muted small">
+                                    {isArchived ? "⚠️ Projekt zarchiwizowany (edycja zablokowana)" : ""}
+                                </div>
+                            )}
                             <button type="button" className="btn btn-light rounded-pill px-4" onClick={onClose}>Anuluj</button>
-                            <button type="submit" className="btn btn-primary rounded-pill px-4 fw-bold shadow-sm">Zapisz zmiany</button>
+                            {!isArchived && (
+                                <button type="submit" className="btn btn-primary rounded-pill px-4 fw-bold shadow-sm">
+                                    Zapisz zmiany
+                                </button>
+                            )}
                         </div>
                     </form>
                 </div>
             </div>
+            <ConfirmModal 
+                isOpen={showDeleteConfirm}
+                onClose={() => setShowDeleteConfirm(false)}
+                onConfirm={handleDelete}
+                title="Usuwanie zadania"
+                message={`Czy na pewno chcesz trwale usunąć zadanie "${task.title}"?`}
+                confirmText="Usuń trwale"
+                variant="danger"
+            />
         </div>
     );
 };

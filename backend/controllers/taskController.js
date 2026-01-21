@@ -9,7 +9,7 @@ exports.getProjectTasks = async (req, res) => {
             .populate('assignedTo', 'firstName lastName avatarUrl')
             .populate('reporter', 'firstName lastName')
             .populate('comments.author', 'firstName lastName avatarUrl')
-            .sort({ order: 1 });
+            .sort({ createdAt: -1 });
 
         return res.json(tasks);
 
@@ -61,6 +61,9 @@ exports.updateTaskStatus = async (req, res) => {
         const task = await Task.findById(taskId);
         if (!task) {
             return res.status(404).json({ msg: 'Zadanie nie istnieje' });
+        }
+        if (task.project.status === 'archived') {
+            return res.status(403).json({ msg: 'Nie można zmieniać statusu zadań w zarchiwizowanym projekcie' });
         }
 
         const userRole = req.projectRole; // rola z middleware
@@ -216,6 +219,31 @@ exports.updateTask = async (req, res) => {
         return res.status(500).json({ 
             msg: 'Błąd podczas edycji zadania',
             error: err.message 
+        });
+    }
+};
+
+exports.deleteTask = async (req, res) => {
+    try {
+        const taskId = req.params.taskId;
+        const userRole = req.projectRole;
+
+        if (userRole !== 'admin') {
+            return res.status(403).json({ msg: 'Tylko administrator może usuwać zadania' });
+        }
+
+        const task = await Task.findByIdAndDelete(taskId);
+
+        if (!task) {
+            return res.status(404).json({ msg: 'Zadanie nie istnieje' });
+        }
+
+        return res.json({ msg: 'Zadanie zostało usunięte', taskId });
+
+    } catch (err) {
+        return res.status(500).json({ 
+            msg: 'Błąd podczas usuwania zadania',
+            error: err.message
         });
     }
 };

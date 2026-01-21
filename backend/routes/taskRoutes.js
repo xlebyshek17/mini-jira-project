@@ -4,10 +4,10 @@ const router = express.Router();
 const { getProjectTasks, 
         createTask,     
         updateTaskStatus, 
-        addTaskComment, 
-        assignTask, 
+        addTaskComment,
         updateTask,
-        updateLink } = require('../controllers/taskController');
+        updateLink,
+        deleteTask } = require('../controllers/taskController');
 
 const protect = require('../middleware/authMiddleware');
 const checkProjectRole = require('../middleware/checkProjectRole');
@@ -21,5 +21,6 @@ router.put('/:taskId/status', protect, checkProjectRole('user'), updateTaskStatu
 router.post('/:taskId/comments', protect, checkProjectRole('user'), addTaskComment);
 router.put('/:taskId', protect, checkProjectRole('admin'), updateTask);
 router.patch('/:taskId/link', protect, checkProjectRole('user'), updateLink);
+router.delete('/:taskId', protect, checkProjectRole('admin'), deleteTask);
 
 module.exports = router;

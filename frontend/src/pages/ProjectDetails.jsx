@@ -113,11 +113,14 @@ const ProjectDetails = ({ refreshProjectList }) => {
                         fetchTasks={fetchTasks}
                     />
                 )}
-                {activeTab === 'board' && <TaskBoard 
-                                            tasks={tasks} 
-                                            setTasks={setTasks}
-                                            onTaskClick={handleTaskViewClick} 
-                                        />}
+                {activeTab === 'board' && 
+                    <TaskBoard 
+                        tasks={tasks} 
+                        setTasks={setTasks}
+                        onTaskClick={handleTaskViewClick} 
+                        isArchived={project.status === 'archived'}
+                    />
+                }
                 {activeTab === 'members' && (
                    <ProjectMembers 
                         members={project.members} 
@@ -147,6 +150,8 @@ const ProjectDetails = ({ refreshProjectList }) => {
                 onClose={() => setIsEditModalOpen(false)}
                 onTaskUpdated={fetchTasks} 
                 members={project?.members || []}
+                isAdmin={isAdmin}
+                isArchived={project.status === 'archived'}
             />
 
             <TaskViewModal 

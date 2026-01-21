@@ -4,15 +4,21 @@ const Task = require('../models/Task');
 const checkProjectRole = (requiredRole) => {
     return async (req, res, next) => {
         try {
-            let projectId = req.params.projectId || req.body.projectId;
-            const userId = req.user.id;
+            const paramsProjectId = req.params?.projectId;
+            const bodyProjectId = req.body?.projectId;
+            const taskId = req.params?.taskId;
 
-            // Jeśli nie ma projectId w URL, szukamy go przez taskId
-            if (!projectId && req.params.taskId) {
-                const task = await Task.findById(req.params.taskId);
+            let projectId;
+
+            // Jeśli nie mamy bezpośrednio ID projektu, ale mamy ID zadania
+            if (!paramsProjectId && !bodyProjectId && taskId) {
+                const task = await Task.findById(taskId);
                 if (!task) return res.status(404).json({ msg: 'Zadanie nie istnieje' });
                 projectId = task.project;
+            } else {
+                projectId = paramsProjectId || bodyProjectId;
             }
+            const userId = req.user.id;
 
             const project = await Project.findById(projectId);
             if (!project) {

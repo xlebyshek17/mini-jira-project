@@ -30,6 +30,11 @@ const taskService = {
     updateLink: async (taskId, link) => {
         const response = await api.patch(`/tasks/${taskId}/link`, { link } );
         return response.data;
+    },
+
+    deleteTask: async (taskId) => {
+        const response = await api.delete(`/tasks/${taskId}`);
+        return response.data;
     }
 };
 

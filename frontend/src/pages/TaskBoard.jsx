@@ -3,7 +3,7 @@ import { useState } from 'react';
 import taskService from '../services/taskService';
 import { toast } from 'react-toastify';
 
-const TaskBoard = ({ tasks, setTasks, onTaskClick }) => {
+const TaskBoard = ({ tasks, setTasks, onTaskClick, isArchived }) => {
     const columns = ['To Do', 'In Progress', 'In Review', 'Done'];
     const [taskFilter, setTaskFilter] = useState('all');
     const currentUserId = JSON.parse(localStorage.getItem('user'))?.id;
@@ -72,7 +72,7 @@ const TaskBoard = ({ tasks, setTasks, onTaskClick }) => {
                                     
                                     <div className="d-flex flex-column gap-3">
                                         {filteredTasks.filter(t => t.status === status).map((task, index) => (
-                                            <Draggable key={task._id} draggableId={task._id} index={index}>
+                                            <Draggable key={task._id} draggableId={task._id} index={index} isDragDisabled={isArchived}>
                                                 {(provided) => (
                                                     <div
                                                         ref={provided.innerRef}
