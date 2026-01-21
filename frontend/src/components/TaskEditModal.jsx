@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import taskService from '../services/taskService';
+import { toast } from 'react-toastify';
 
 const TaskEditModal = ({ task, isOpen, onClose, onTaskUpdated, members }) => {
     const [formData, setFormData] = useState({
@@ -36,7 +37,7 @@ const TaskEditModal = ({ task, isOpen, onClose, onTaskUpdated, members }) => {
             onTaskUpdated(); // Odświeżamy listę zadań
             onClose();
         } catch (err) {
-            alert("Błąd podczas aktualizacji: " + err.response?.data?.msg);
+            toast.error("Błąd podczas aktualizacji: " + err.response?.data?.msg);
         }
     };
 

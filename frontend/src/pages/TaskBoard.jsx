@@ -1,6 +1,7 @@
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { useState } from 'react';
 import taskService from '../services/taskService';
+import { toast } from 'react-toastify';
 
 const TaskBoard = ({ tasks, setTasks, onTaskClick }) => {
     const columns = ['To Do', 'In Progress', 'In Review', 'Done'];
@@ -36,7 +37,7 @@ const TaskBoard = ({ tasks, setTasks, onTaskClick }) => {
             await taskService.updateTaskStatus(draggableId, newStatus);
         } catch (err) {
             setTasks(oldTasks);
-            alert("Błąd zmiany statusu: " + (err.response?.data?.msg || err.message));
+            toast.error("Błąd zmiany statusu: " + (err.response?.data?.msg || err.message));
         }
     };
 

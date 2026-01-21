@@ -1,35 +1,41 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import projectService from '../services/projectService';
+import { toast } from 'react-toastify';
+import ConfirmModal from '../components/ConfirmModal';
 
 const ProjectSettings = ({ project, isAdmin, isOwner, onProjectUpdated }) => {
     const [name, setName] = useState(project.name);
     const [description, setDescription] = useState(project.description || '');
     const navigate = useNavigate();
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
 
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
             await projectService.updateProject(project._id, { name, description });
             onProjectUpdated(); 
-            alert("Ustawienia zapisane pomyślnie!");
+            toast.success("Ustawienia zapisane pomyślnie!");
         } catch (err) {
-            alert("Błąd aktualizacji: " + (err.response?.data?.msg || err.message));
+            toast.error("Błąd aktualizacji: " + (err.response?.data?.msg || err.message));
         }
     };
 
-    const handleArchive = async () => {
-        const action = project.status === 'active' ? 'zarchiwizować' : 'przywrócić';
-        if (!window.confirm(`Czy na pewno chcesz ${action} ten projekt?`)) return;
-        
+    const handleArchiveTrigger = () => {
+        setShowConfirmModal(true);
+    };
+
+    const confirmArchive = async () => {
         try {
             await projectService.archiveProject(project._id);
             await onProjectUpdated();
-            alert(`Projekt został pomyślnie ${project.status === 'active' ? 'zarchiwizowany' : 'przywrócony'}.`);
+            toast.success(`Projekt został pomyślnie ${project.status === 'active' ? 'zarchiwizowany' : 'przywrócony'}.`);
         } catch (err) {
-            alert("Błąd: " + err.response?.data?.msg);
+            toast.error("Błąd: " + (err.response?.data?.msg || "Wystąpił nieoczekiwany błąd"));
         }
     };
+
+    const actionText = project.status === 'active' ? 'zarchiwizować' : 'przywrócić';
 
     return (
         <div className="settings-view max-width-md mx-auto">
@@ -68,11 +74,21 @@ const ProjectSettings = ({ project, isAdmin, isOwner, onProjectUpdated }) => {
                     <p className="small text-muted mb-3">
                         Zarchiwizowane projekty znikną z list zadań innych członków. Tylko Ty będziesz mógł je przywrócić.
                     </p>
-                    <button className="btn btn-warning rounded-pill px-4 fw-bold shadow-sm" onClick={handleArchive}>
+                    <button className="btn btn-warning rounded-pill px-4 fw-bold shadow-sm" onClick={handleArchiveTrigger}>
                         {project.status === 'active' ? 'Zarchiwizuj projekt' : 'Przywróć projekt'}
                     </button>
                 </div>
             )}
+
+            <ConfirmModal 
+                isOpen={showConfirmModal}
+                onClose={() => setShowConfirmModal(false)}
+                onConfirm={confirmArchive}
+                title={project.status === 'active' ? "Archiwizacja projektu" : "Przywracanie projektu"}
+                message={`Czy na pewno chcesz ${actionText} ten projekt?`}
+                confirmText={project.status === 'active' ? "Zarchiwizuj" : "Przywróć"}
+                variant={project.status === 'active' ? "warning" : "primary"}
+            />
         </div>
     );
 };

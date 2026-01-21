@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import projectService from '../services/projectService';
+import { toast } from 'react-toastify';
 
 const JoinProjectModal = ({ isOpen, onClose, onProjectJoined }) => {
     const [inviteCode, setInviteCode] = useState('');
@@ -11,15 +12,15 @@ const JoinProjectModal = ({ isOpen, onClose, onProjectJoined }) => {
         e.preventDefault();
         setLoading(true);
         try {
-            const response = await projectService.joinProject(inviteCode);
+            const joinedProject = await projectService.joinProject(inviteCode);
             
-            alert(response.msg);
+            toast.success(joinedProject.msg);
             
             setInviteCode('');
-            onProjectJoined();
+            onProjectJoined(joinedProject);
             onClose();
         } catch (err) {
-            alert(err.response?.data?.msg || "Wystąpił błąd podczas dołączania");
+            toast.error(err.response?.data?.msg || "Wystąpił błąd podczas dołączania");
         } finally {
             setLoading(false);
         }

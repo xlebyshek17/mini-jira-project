@@ -126,7 +126,8 @@ const ProjectDetails = ({ refreshProjectList }) => {
                         ownerId={project.owner._id}
                         isAdmin={isAdmin} 
                         onMemberUpdated={() => {
-                            loadDetails(); 
+                            loadDetails();
+                            fetchTasks(); 
                         }}
                     />
                 )}

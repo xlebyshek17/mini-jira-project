@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import authService from '../services/authService';
 
-const ProfilePage = () => {
-    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
+const ProfilePage = ({ user, onUserUpdate }) => {
+    //const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
     const [formData, setFormData] = useState({
         firstName: user?.firstName || '',
         lastName: user?.lastName || '',
@@ -10,6 +10,17 @@ const ProfilePage = () => {
         password: user?.password || ''
     });
     const [message, setMessage] = useState({ type: '', text: '' });
+
+    useEffect(() => {
+        if (user) {
+            setFormData({
+                firstName: user.firstName || '',
+                lastName: user.lastName || '',
+                email: user.email || '',
+                password: ''
+            });
+        }
+    }, [user]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -21,7 +32,8 @@ const ProfilePage = () => {
 
         try {
             const res = await authService.uploadAvatar(file);
-            setUser({ ...user, avatarUrl: res.avatarUrl });
+            //setUser({ ...user, avatarUrl: res.avatarUrl });
+            onUserUpdate();
             setMessage({ type: 'success', text: 'Zdjęcie zaktualizowane!' });
             window.location.reload(); 
         } catch (err) {
@@ -33,6 +45,7 @@ const ProfilePage = () => {
         e.preventDefault();
         try {
             await authService.updateProfile(formData);
+            onUserUpdate();
             setMessage({ type: 'success', text: 'Profil zaktualizowany pomyślnie!' });
         } catch (err) {
             setMessage({ type: 'danger', text: 'Błąd podczas aktualizacji danych.' });

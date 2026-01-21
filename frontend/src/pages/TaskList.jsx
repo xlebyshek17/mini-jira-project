@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import taskService from '../services/taskService';
+import { toast } from 'react-toastify';
 
 const TaskList = ({ projectId, tasks, isAdmin, onTaskClick, fetchTasks }) => {
     const [isAdding, setIsAdding] = useState(false);
@@ -24,7 +25,7 @@ const TaskList = ({ projectId, tasks, isAdmin, onTaskClick, fetchTasks }) => {
             fetchTasks(); // Odświeżenie listy po dodaniu
         } catch (err) {
             console.error(err.response?.data);
-            alert("Błąd: " + (err.response?.data?.error || "Nieznany błąd"));
+            toast.error("Błąd: " + (err.response?.data?.error || "Nieznany błąd"));
         }
     };
 

@@ -1,27 +1,25 @@
 import { useState } from 'react';
 import projectService from '../services/projectService';
+import { toast } from 'react-toastify';
 
 const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-
     // Jeśli 'isOpen' jest false, nie wyświetlamy nic
     if (!isOpen) return null;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Wysyłamy dane do Twojego kontrolera createProject
             const newProject = await projectService.createProject({ name, description });
             
-            alert(`Projekt stworzony! Kod dołączenia: ${newProject.inviteCode}`); // inviteCode generowany przez crypto
+            toast.success(`Projekt stworzony! Kod dołączenia: ${newProject.inviteCode}`); // inviteCode generowany przez crypto
             
             setName('');
             setDescription('');
-            onProjectCreated(); // Ta funkcja odświeży listę w Sidebarze
-            onClose(); // Zamykamy okno
+            onProjectCreated(newProject); 
         } catch (err) {
-            alert(err.response?.data?.msg || "Błąd podczas tworzenia projektu");
+            toast.error(err.response?.data?.msg || "Błąd podczas tworzenia projektu");
         }
     };
 

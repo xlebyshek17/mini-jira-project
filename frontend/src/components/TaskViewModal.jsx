@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import taskService from '../services/taskService';
+import { toast } from 'react-toastify';
 
 const TaskViewModal = ({ task, isOpen, onClose, onTaskUpdated }) => {
     const [comment, setComment] = useState('');
@@ -19,12 +20,11 @@ const TaskViewModal = ({ task, isOpen, onClose, onTaskUpdated }) => {
         if (!comment.trim()) return;
 
         try {
-            // Korzystamy z Twojego kontrolera na backendzie
             await taskService.addTaskComment(task._id, comment);
             setComment('');
             onTaskUpdated(); // Odświeżamy zadanie, by zobaczyć nowy komentarz
         } catch (err) {
-            alert("Błąd podczas dodawania komentarza");
+            toast.error("Błąd podczas dodawania komentarza");
         }
     };
 
@@ -34,7 +34,7 @@ const TaskViewModal = ({ task, isOpen, onClose, onTaskUpdated }) => {
             setIsEditingLink(false);
             onTaskUpdated();
         } catch (err) {
-            alert("Błąd aktualizacji linku");
+            toast.error("Błąd aktualizacji linku");
         }
     };
 
@@ -43,7 +43,6 @@ const TaskViewModal = ({ task, isOpen, onClose, onTaskUpdated }) => {
             <div className="modal-dialog modal-xl modal-dialog-centered">
                 <div className="modal-content border-0 shadow-lg rounded-3 overflow-hidden" style={{ minHeight: '80vh' }}>
                     
-                    {/* Header: Task ID i typ */}
                     <div className="modal-header border-0 px-4 py-3 bg-white d-flex justify-content-between">
                         <div className="d-flex align-items-center gap-2 text-secondary small fw-bold">
                             <span>{task.type === 'Bug' ? '🐞' : '✅'}</span>
@@ -163,7 +162,6 @@ const TaskViewModal = ({ task, isOpen, onClose, onTaskUpdated }) => {
                                                     ) : (
                                                         <span className="text-muted small">Brak</span>
                                                     )}
-                                                    {/* Ikonka edycji widoczna dla każdego z uprawnieniami */}
                                                     <button className="btn btn-sm p-0 text-primary" onClick={() => setIsEditingLink(true)}>✎</button>
                                                 </div>
                                             )}

@@ -29,7 +29,11 @@ const authService = {
     updateProfile: async (userData) => {
         const response = await api.put('/auth/profile', userData);
         if (response.data.user) {
-            localStorage.setItem('user', JSON.stringify(response.data.user));
+            const oldUser = JSON.parse(localStorage.getItem('user'));
+            const mergedUser = { ...oldUser, ...response.data.user };
+            
+            localStorage.setItem('user', JSON.stringify(mergedUser));
+            return { user: mergedUser };
         }
         return response.data;
     },

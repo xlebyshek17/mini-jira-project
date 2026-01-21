@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import authService from '../services/authService.js';
+import { toast } from 'react-toastify';
 
 const RegisterPage = () => {
     const [formData, setFormData] = useState({
@@ -22,11 +23,11 @@ const RegisterPage = () => {
         e.preventDefault();
         try {
             await authService.register(formData);
-            alert("Rejestracja udana!!!");
+            toast.success("Rejestracja udana!!!");
             navigate('/login');
         } catch (err) {
             console.error(err);
-            alert("Błąd rejestracji");
+            toast.error("Błąd rejestracji");
         }
     };
 

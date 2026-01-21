@@ -2,8 +2,8 @@ import  { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import authService from '../services/authService';
 
-const Sidebar = ({ onOpenCreateModal, onOpenJoinModal, projects }) => {
-    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
+const Sidebar = ({ onOpenCreateModal, onOpenJoinModal, projects, user }) => {
+    //const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
     const navigate = useNavigate();
     const location = useLocation();
     // Stan filtra: 'active' lub 'archived'

@@ -1,24 +1,35 @@
 import projectService from '../services/projectService';
+import { toast } from 'react-toastify';
+import ConfirmModal from '../components/ConfirmModal';
+import { useState } from 'react';
 
 const ProjectMembers = ({ members, projectId, inviteCode, ownerId, isAdmin, onMemberUpdated }) => {
     const currentUserId = JSON.parse(localStorage.getItem('user'))?.id;
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [memberToRemove, setMemberToRemove] = useState(null);
 
     const handleRoleChange = async (userId, newRole) => {
         try {
             await projectService.updateMemberRole(projectId, userId, newRole);
             onMemberUpdated(); 
+            toast.success("Udana zmiana roli!");
         } catch (err) {
-            alert("Błąd zmiany roli: " + err.response?.data?.msg);
+            toast.error("Błąd zmiany roli: " + err.response?.data?.msg);
         }
     };
 
-    const handleRemoveMember = async (userId) => {
-        if (!window.confirm("Czy na pewno chcesz usunąć tego członka?")) return;
+    const handleRemoveClick = (userId) => {
+        setMemberToRemove(userId);
+        setShowConfirmModal(true);
+    };
+
+    const confirmRemoveMember = async () => {
         try {
-            await projectService.removeMember(projectId, userId);
+            await projectService.removeMember(projectId, memberToRemove);
             onMemberUpdated();
+            toast.success("Użytkownik został usunięty z projektu.");
         } catch (err) {
-            alert("Błąd podczas usuwania: " + err.response?.data?.msg);
+            toast.error("Błąd podczas usuwania: " + (err.response?.data?.msg || "Wystąpił błąd"));
         }
     };
 
@@ -68,7 +79,7 @@ const ProjectMembers = ({ members, projectId, inviteCode, ownerId, isAdmin, onMe
                                 </td>
                                 <td className="text-end px-4">
                                     {isAdmin && !isOwner && !isMe && (
-                                        <button className="btn btn-sm text-danger" onClick={() => handleRemoveMember(m.user._id)}>
+                                        <button className="btn btn-sm text-danger" onClick={() => handleRemoveClick(m.user._id)}>
                                             Usuń
                                         </button>
                                     )}
@@ -79,6 +90,15 @@ const ProjectMembers = ({ members, projectId, inviteCode, ownerId, isAdmin, onMe
                     </tbody>
                 </table>
             </div>
+            <ConfirmModal 
+                isOpen={showConfirmModal}
+                onClose={() => setShowConfirmModal(false)}
+                onConfirm={confirmRemoveMember}
+                title="Usuwanie członka zespołu"
+                message="Czy na pewno chcesz usunąć tego użytkownika z projektu? Straci on dostęp do wszystkich zadań."
+                confirmText="Usuń"
+                variant="danger"
+            />
         </div>
     );
 };
