@@ -18,7 +18,6 @@ router.post('/project/:projectId', protect, checkProjectRole('admin'), createTas
 
 // OPERACJE NA KONKRETNYM ZADANIU
 router.put('/:taskId/status', protect, checkProjectRole('user'), updateTaskStatus);
-router.put('/:taskId/assign', protect, checkProjectRole('admin'), assignTask);
 router.post('/:taskId/comments', protect, checkProjectRole('user'), addTaskComment);
 router.put('/:taskId', protect, checkProjectRole('admin'), updateTask);
 router.patch('/:taskId/link', protect, checkProjectRole('user'), updateLink);

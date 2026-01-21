@@ -1,5 +1,5 @@
 const Task = require('../models/Task');
-const Project = require('../models/Project');
+const Notification = require('../models/Notification');
 
 // READ populate podmnieni id przepisane do assignedTo firstName lastName avatarUrl
 exports.getProjectTasks = async (req, res) => {
@@ -56,6 +56,7 @@ exports.updateTaskStatus = async (req, res) => {
     try {
         const { newStatus } = req.body;
         const taskId = req.params.taskId;
+        const oldTask = await Task.findById(taskId);
 
         const task = await Task.findById(taskId);
         if (!task) {
@@ -76,7 +77,18 @@ exports.updateTaskStatus = async (req, res) => {
         }
 
         task.status = newStatus;
-        await task.save();
+        const updatedTask = await task.save();
+
+        if (oldTask.status === 'In Review' && updatedTask.status === 'Done') {
+            await Notification.create({
+                recipient: updatedTask.assignedTo,
+                sender: req.user.id,
+                type: 'TASK_DONE',
+                project: updatedTask.project,
+                task: updatedTask._id,
+                message: `Twoje zadanie „${updatedTask.title}” zostało sprawdzone i jest gotowe!`
+            });
+        }
 
         return res.json(task);
 
@@ -103,43 +115,22 @@ exports.addTaskComment = async (req, res) => {
             author: req.user.id
         });
 
-        await task.save();
+        const updatedTask = await task.save();
+
+        await Notification.create({
+                recipient: updatedTask.assignedTo,
+                sender: req.user.id,
+                type: 'NEW_COMMENT',
+                project: updatedTask.project,
+                task: updatedTask._id,
+                message: `Do twojego zadanie „${updatedTask.title}” zostało dodane komentarz!`
+            });
 
         return res.status(201).json(task.comments);
 
     } catch (err) {
         return res.status(500).json({ 
             msg: 'Błąd podczas dodawania komentarza',
-            error: err.message
-        });
-    }
-};
-
-exports.assignTask = async (req, res) => {
-    try {
-        const { userId } = req.body;
-        const taskId = req.params.taskId;
-        const userRole = req.projectRole; // Pobieramy rolę z middleware
-
-        // TYLKO ADMIN może zmieniać wykonawcę zadania
-        if (userRole !== 'admin') {
-            return res.status(403).json({ msg: 'Tylko admin może przypisywać zadania innym osobom' });
-        }
-
-        const task = await Task.findByIdAndUpdate(
-            taskId,
-            { assignedTo: userId },
-            { new: true }
-        ).populate('assignedTo', 'firstName lastName avatarUrl');
-
-        if (!task) {
-            return res.status(404).json({ msg: 'Zadanie nie istnieje' });
-        }
-
-        return res.json(task);
-    } catch (err) {
-        return res.status(500).json({ 
-            msg: 'Błąd podczas przypisywania wykonawcy',
             error: err.message
         });
     }
@@ -180,6 +171,7 @@ exports.updateTask = async (req, res) => {
         const { title, description, priority, type, link, dueDate, assignedTo } = req.body;
         const taskId = req.params.taskId;
         const userRole = req.projectRole;
+        const oldTask = await Task.findById(taskId);
 
         if (userRole !== 'admin') {
             return res.status(403).json({ msg: 'Tylko administrator może edytować szczegóły zadania' });
@@ -205,6 +197,17 @@ exports.updateTask = async (req, res) => {
 
         if (!task) {
             return res.status(404).json({ msg: 'Zadanie nie istnieje' });
+        }
+
+        if (assignedTo && assignedTo !== oldTask.assignedTo?.toString()) {
+            await Notification.create({
+                recipient: req.body.assignedTo,
+                sender: req.user.id,
+                type: 'TASK_ASSIGNED',
+                project: task.project,
+                task: task._id,
+                message: `Przydzielono Ci zadanie: ${task.title}`
+            });
         }
 
         return res.json(task);

@@ -22,11 +22,6 @@ const taskService = {
         return response.data;
     },
 
-    assignTask: async (taskId, userId) => {
-        const response = await api.put(`/tasks/${taskId}/assign`, { userId });
-        return response.data;
-    },
-
     updateTask: async (taskId, updatedTask) => {
         const response = await api.put(`/tasks/${taskId}`, updatedTask);
         return response.data;
