@@ -1,16 +1,14 @@
 import  { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import authService from '../services/authService';
-import ConfirmModal from './ConfirmModal';
 
 const Sidebar = ({ onOpenCreateModal, onOpenJoinModal, projects, user }) => {
     const navigate = useNavigate();
     const location = useLocation();
     // Stan filtra: 'active' lub 'archived'
     const [filter, setFilter] = useState('active');
-    const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
-    const handleConfirmLogout = () => {
+    const handleLogout = () => {
         authService.logout();
         navigate('/');
     };
@@ -110,21 +108,12 @@ const Sidebar = ({ onOpenCreateModal, onOpenJoinModal, projects, user }) => {
                 <hr className="text-secondary"/>
 
                 <button 
-                    onClick={() => setIsLogoutModalOpen(true)}
+                    onClick={() => handleLogout}
                     className="btn btn-danger btn-sm w-100 rounded-pill fw-bold"
                 >
                     Logout
                 </button>
             </div>
-            <ConfirmModal 
-                isOpen={isLogoutModalOpen}
-                onClose={() => setIsLogoutModalOpen(false)}
-                onConfirm={handleConfirmLogout}
-                title="Wylogowanie"
-                message="Czy na pewno chcesz się wylogować z aplikacji TaskFlow?"
-                confirmText="Wyloguj mnie"
-                variant="danger"
-            />
         </div>
     );
 };
