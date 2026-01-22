@@ -54,7 +54,7 @@ const ProjectMembers = ({ members, projectId, inviteCode, ownerId, isAdmin, onMe
                             <tr key={m.user._id}>
                                 <td className="px-4">
                                     <div className="d-flex align-items-center gap-3">
-                                        <img src={`http://localhost:5000${m.user.avatarUrl}`} className="rounded-circle border" style={{ width: '35px', height: '35px' }} alt="avatar" />
+                                        <img src={`http://18.194.232.128:5000${m.user.avatarUrl}`} className="rounded-circle border" style={{ width: '35px', height: '35px' }} alt="avatar" />
                                         <span className="fw-bold">
                                             {m.user.firstName} {m.user.lastName} 
                                             {isOwner && <span className="ms-2 badge bg-dark x-small">OWNER</span>}

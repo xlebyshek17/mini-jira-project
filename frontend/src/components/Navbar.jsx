@@ -81,7 +81,9 @@ const Navbar = () => {
                                             {n.type === 'TASK_DONE' ? '✅' : n.type === 'NEW_COMMENT' ? '💬' : '📌'}
                                         </div>
                                         <div>
-                                            <div className="small text-dark" style={{ whiteSpace: 'normal' }}>{n.project.name}</div>
+                                            <div className="small fw-bold text-dark" style={{ whiteSpace: 'normal' }}>
+                                                {n.project?.name || 'Usunięty projekt'}
+                                            </div>
                                             <div className="small text-dark" style={{ whiteSpace: 'normal' }}>{n.message}</div>
                                             <div className="x-small text-muted mt-1">
                                                 {new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
