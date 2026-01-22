@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Tworzymy instancję axiosa z adresem Twojego backendu
 const api = axios.create({
-    baseURL: '/api', // Twój adres backendu
+    baseURL: 'http://18.194.232.128:5000/api', // Twój adres backendu
     headers: {
         'Content-Type': 'application/json',
     },
