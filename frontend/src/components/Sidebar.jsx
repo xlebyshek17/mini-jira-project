@@ -108,7 +108,7 @@ const Sidebar = ({ onOpenCreateModal, onOpenJoinModal, projects, user }) => {
                 <hr className="text-secondary"/>
 
                 <button 
-                    onClick={() => handleLogout}
+                    onClick={handleLogout}
                     className="btn btn-danger btn-sm w-100 rounded-pill fw-bold"
                 >
                     Logout
