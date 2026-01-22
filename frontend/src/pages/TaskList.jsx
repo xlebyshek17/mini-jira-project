@@ -83,7 +83,7 @@ const TaskList = ({ projectId, tasks, isAdmin, onTaskClick, fetchTasks }) => {
                                 </span>
                             </td>
                             <td>
-                                <span className="text-warning fw-bold">＝ {task.priority}</span>
+                                <span className={`fw-bold ${task.priority === 'High' ? 'text-danger' : 'text-warning'}`}>＝ {task.priority}</span>
                             </td>
                             <td>
                                 <span className={`badge rounded-1 px-2 py-1 text-uppercase ${
