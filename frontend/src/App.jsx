@@ -9,6 +9,7 @@ import MainLayout from './components/MainLayout';
 import ProfilePage from './pages/ProfilePage';
 import ProjectDetails from './pages/ProjectDetails';
 import LandingPage from './pages/LandingPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
 
@@ -18,7 +19,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/profile" element={<MainLayout><ProfilePage /></MainLayout>} />
+        <Route path="/profile" element={<ProtectedRoute><MainLayout><ProfilePage /></MainLayout></ProtectedRoute>} />
         <Route path="/projects/:projectId" element={<MainLayout><ProjectDetails /></MainLayout>} />
       </Routes>
       <ToastContainer position="bottom-right" theme="dark" autoClose={3000} />
