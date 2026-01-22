@@ -45,7 +45,7 @@ const TaskViewModal = ({ task, isOpen, onClose, onTaskUpdated }) => {
                     
                     <div className="modal-header border-0 px-4 py-3 bg-white d-flex justify-content-between">
                         <div className="d-flex align-items-center gap-2 text-secondary small fw-bold">
-                            <span>{task.type === 'Bug' ? '🐞' : '✅'}</span>
+                            <span>{task.type}</span>
                             <span>KAN-{task._id.slice(-3)}</span>
                         </div>
                         <button type="button" className="btn-close" onClick={onClose}></button>

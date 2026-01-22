@@ -83,7 +83,7 @@ const TaskBoard = ({ tasks, setTasks, onTaskClick, isArchived }) => {
                                                     >
                                                         <div className="d-flex justify-content-between mb-2">
                                                             <span className="text-primary x-small fw-bold">KAN-{task._id.slice(-3)}</span>
-                                                            <span>{task.type === 'Bug' ? '🐞' : task.type === 'Feature' ? '🚀' : '✅'}</span>
+                                                            <span>{task.type}</span>
                                                         </div>
                                                         <p className="mb-2 small fw-bold">{task.title}</p>
                                                         <div className="d-flex justify-content-end">
