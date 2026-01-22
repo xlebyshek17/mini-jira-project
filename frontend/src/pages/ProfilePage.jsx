@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import authService from '../services/authService';
 
 const ProfilePage = ({ user, onUserUpdate }) => {
-    //const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
     const [formData, setFormData] = useState({
         firstName: user?.firstName || '',
         lastName: user?.lastName || '',
@@ -32,7 +31,6 @@ const ProfilePage = ({ user, onUserUpdate }) => {
 
         try {
             const res = await authService.uploadAvatar(file);
-            //setUser({ ...user, avatarUrl: res.avatarUrl });
             onUserUpdate();
             setMessage({ type: 'success', text: 'Zdjęcie zaktualizowane!' });
             window.location.reload(); 
@@ -66,7 +64,7 @@ const ProfilePage = ({ user, onUserUpdate }) => {
                                 <div className="d-inline-block position-relative">
                                     {user?.avatarUrl ? (
                                         <img 
-                                            src={`http://localhost:5000${user.avatarUrl}`} 
+                                            src={`http://18.194.232.128:5000${user.avatarUrl}`} 
                                             className="rounded-circle border shadow-sm"
                                             style={{ width: '150px', height: '150px', objectFit: 'cover' }}
                                             alt="Avatar"
