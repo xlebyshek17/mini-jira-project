@@ -25,7 +25,7 @@ const LoginPage = () => {
 
             <div className="card shadow-lg p-4" style={{ width: '100%', maxWidth: '500px' }}>
                 <div className="card-body">
-                    <h2 className="text-center mb-4 fw-bold text-success">Logowania</h2>
+                    <h2 className="text-center mb-4 fw-bold text-dark">Logowania</h2>
 
                     {error && <div className="alert alert-danger text-center">{error}</div>}
 
@@ -54,14 +54,14 @@ const LoginPage = () => {
                             />
                         </div>
 
-                        <button type="submit" className="btn btn-success btn-lg w-100 fw-bold shadow-sm mt-3">
+                        <button type="submit" className="btn btn-dark btn-lg w-100 fw-bold shadow-sm mt-3">
                             ZALOGUJ SIĘ
                         </button>
                     </form>
 
                     <div className="mt-4 text-center">
                         <span className="text-muted">Nie masz konta? </span>
-                        <Link to="/register" className="text-decoration-none fw-bold text-success">Zarejestruj się</Link>
+                        <Link to="/register" className="text-decoration-none fw-bold text-dark">Zarejestruj się</Link>
                     </div>
                 </div>
             </div>

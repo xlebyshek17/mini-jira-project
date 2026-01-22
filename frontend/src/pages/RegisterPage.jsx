@@ -36,7 +36,7 @@ const RegisterPage = () => {
 
             <div className="card shadow-lg" style={{ width: '100%', maxWidth: '500px', border: 'none', borderRadius: '20px' }}>
                 <div className="card-body p-5">
-                    <h2 className="text-center mb-4 fw-bold text-success">Załóż konto</h2>
+                    <h2 className="text-center mb-4 fw-bold text-dark">Załóż konto</h2>
 
                     <form onSubmit={handleRegister}>
                         <div className="row">
@@ -84,14 +84,14 @@ const RegisterPage = () => {
                             />
                         </div>
 
-                        <button type="submit" className="btn btn-success btn-lg w-100 fw-bold shadow-sm mt-3">
+                        <button type="submit" className="btn btn-dark btn-lg w-100 fw-bold shadow-sm mt-3">
                             ZAREJESTRUJ SIĘ
                         </button>
                     </form>
 
                     <div className="mt-4 text-center">
                         <span className="text-muted">Masz już konto? </span>
-                        <Link to="/login" className="text-decoration-none fw-bold text-success">Zaloguj się</Link>
+                        <Link to="/login" className="text-decoration-none fw-bold text-dark">Zaloguj się</Link>
                     </div>
                 </div>
             </div>

@@ -37,6 +37,12 @@ exports.joinProject = async (req, res) => {
             return res.status(404).json({ msg: 'Nie znalieziono projektu o tym kodzie'} );
         }
 
+        if (project.status === 'archived') {
+            return res.status(403).json({ 
+                msg: 'Ten projekt jest zarchiwizowany. Nie można do niego dołączyć.' 
+            });
+        }
+
         const isMember = project.members.some(m => m.user.toString() === req.user.id);
         if (isMember) {
             return res.status(400).json({ msg: 'Już jesteś członkiem tego projektu'} );

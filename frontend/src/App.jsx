@@ -8,13 +8,14 @@ import RegisterPage from './pages/RegisterPage';
 import MainLayout from './components/MainLayout';
 import ProfilePage from './pages/ProfilePage';
 import ProjectDetails from './pages/ProjectDetails';
+import LandingPage from './pages/LandingPage';
 
 function App() {
 
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/profile" element={<MainLayout><ProfilePage /></MainLayout>} />
