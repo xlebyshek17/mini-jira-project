@@ -64,7 +64,7 @@ const ProfilePage = ({ user, onUserUpdate }) => {
                                 <div className="d-inline-block position-relative">
                                     {user?.avatarUrl ? (
                                         <img 
-                                            src={`http://18.194.232.128:5000${user.avatarUrl}`} 
+                                            src={`http://http://3.74.47.1:5000${user.avatarUrl}`} 
                                             className="rounded-circle border shadow-sm"
                                             style={{ width: '150px', height: '150px', objectFit: 'cover' }}
                                             alt="Avatar"

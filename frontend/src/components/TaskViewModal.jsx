@@ -123,7 +123,7 @@ const TaskViewModal = ({ task, isOpen, onClose, onTaskUpdated }) => {
                                         <div className="col-7 fw-bold">
                                             {task.assignedTo ? (
                                                 <div className="d-flex align-items-center gap-2">
-                                                    <img src={`http://18.194.232.128:5000${task.assignedTo.avatarUrl}`} className="rounded-circle" style={{ width: '20px', height: '20px' }} alt="" />
+                                                    <img src={`http://http://3.74.47.1:5000${task.assignedTo.avatarUrl}`} className="rounded-circle" style={{ width: '20px', height: '20px' }} alt="" />
                                                     {task.assignedTo.firstName} {task.assignedTo.lastName}
                                                 </div>
                                             ) : 'Unassigned'}
