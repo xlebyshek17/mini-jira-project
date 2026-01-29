@@ -66,7 +66,7 @@ const TaskList = ({ projectId, tasks, isAdmin, onTaskClick, fetchTasks }) => {
                                 {task.assignedTo ? (
                                     <div className="d-flex align-items-center gap-2">
                                         <img 
-                                            src={`http://3.74.47.1:5000${task.assignedTo.avatarUrl}`} 
+                                            src={`${task.assignedTo.avatarUrl}`} 
                                             className="rounded-circle" 
                                             style={{ width: '24px', height: '24px', objectFit: 'cover' }} 
                                             alt="Avatar"
@@ -115,7 +115,7 @@ const TaskList = ({ projectId, tasks, isAdmin, onTaskClick, fetchTasks }) => {
                                     >
                                         <option value="Task">Task</option>
                                         <option value="Bug">Bug</option>
-                                        <option value="Story">Feature</option>
+                                        <option value="Feature">Feature</option>
                                     </select>
 
                                     <input 

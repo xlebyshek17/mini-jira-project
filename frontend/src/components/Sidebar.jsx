@@ -23,7 +23,7 @@ const Sidebar = ({ onOpenCreateModal, onOpenJoinModal, projects, user }) => {
                 <div className="position-relative d-inline-block">
                     {user?.avatarUrl ? (
                         <img 
-                            src={`http://3.74.47.1:5000${user.avatarUrl}`} 
+                            src={`${user.avatarUrl}`} 
                             alt="Avatar" 
                             className="rounded-circle border shadow-sm"
                             style={{ width: '80px', height: '80px', objectFit: 'cover' }}

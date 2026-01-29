@@ -89,7 +89,7 @@ const TaskBoard = ({ tasks, setTasks, onTaskClick, isArchived }) => {
                                                         <div className="d-flex justify-content-end">
                                                             {task.assignedTo ? (
                                                                 <img 
-                                                                    src={`http://3.74.47.1:5000${task.assignedTo.avatarUrl}`} 
+                                                                    src={`${task.assignedTo.avatarUrl}`} 
                                                                     className="rounded-circle" 
                                                                     style={{ width: '24px', height: '24px', objectFit: 'cover' }} 
                                                                     alt="Avatar"
