@@ -13,7 +13,7 @@ const Sidebar = ({ onOpenCreateModal, onOpenJoinModal, projects, user }) => {
         navigate('/');
     };
 
-    const filteredProjects = projects.filter(p => p.status === filter);
+    const filteredProjects = Array.isArray(projects) ? projects.filter(p => p.status === filter) : [];
 
     return (
        <div className="d-flex flex-column flex-shrink-0 p-3 bg-dark text-white border-end border-secondary shadow-sm" 
