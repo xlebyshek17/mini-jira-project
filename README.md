@@ -1,6 +1,6 @@
-# TaskFlow — Project Management System
+# Mini-Jira — Project Management System
 
-TaskFlow is a modern, full-stack project management application inspired by Jira and Trello. It allows teams to collaborate on projects, track tasks via a Kanban board, manage roles, and receive real-time updates.
+Mini-Jira is a modern, full-stack project management application inspired by Jira and Trello. It allows teams to collaborate on projects, track tasks via a Kanban board, manage roles, and receive real-time updates.
 
 ## 🚀 Features
 
